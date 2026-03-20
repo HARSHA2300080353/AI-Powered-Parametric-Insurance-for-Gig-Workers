@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GigShield — Parametric Insurance for Gig Workers</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#0b0f1a;color:#e2e8f0;overflow-x:hidden;}
+a{text-decoration:none;}
+button{cursor:pointer;font-family:'Inter',sans-serif;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:999;display:flex;align-items:center;justify-content:space-between;padding:14px 48px;background:rgba(11,15,26,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.07);}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;color:#22d3ee;display:flex;align-items:center;gap:8px;cursor:pointer;}
+.logo-box{width:30px;height:30px;background:linear-gradient(135deg,#22d3ee,#14b8a6);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links li{color:#94a3b8;font-size:0.875rem;font-weight:500;cursor:pointer;transition:color 0.2s;padding:4px 0;}
+.nav-links li:hover,.nav-links li.active{color:#22d3ee;}
+.nav-btns{display:flex;gap:10px;}
+.btn{padding:8px 20px;border-radius:8px;font-size:0.875rem;font-weight:600;border:none;transition:all 0.2s;cursor:pointer;}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.12);color:#e2e8f0;}
+.btn-ghost:hover{border-color:#22d3ee;color:#22d3ee;}
+.btn-cyan{background:#22d3ee;color:#000;}
+.btn-cyan:hover{background:#67e8f9;transform:translateY(-1px);}
+.btn-lg{padding:13px 30px;font-size:1rem;border-radius:10px;}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.12);color:#e2e8f0;padding:13px 30px;font-size:1rem;border-radius:10px;}
+.btn-outline:hover{border-color:#22d3ee;color:#22d3ee;}
+.btn-full{width:100%;padding:12px;border-radius:9px;font-size:0.95rem;font-weight:600;}
+.btn-danger{background:#f43f5e;color:#fff;padding:8px 16px;border-radius:8px;font-size:0.82rem;font-weight:600;border:none;}
+.btn-danger:hover{background:#fb7185;}
+.btn-sm{padding:6px 14px;font-size:0.78rem;border-radius:7px;}
+
+/* PAGES */
+.page{display:none;min-height:100vh;padding-top:64px;}
+.page.active{display:block;}
+
+/* ===== LANDING ===== */
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px 60px;min-height:88vh;}
+.badge{display:inline-flex;align-items:center;gap:7px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.25);border-radius:100px;padding:5px 14px;font-family:'DM Mono',monospace;font-size:0.7rem;color:#22d3ee;margin-bottom:28px;}
+.bdot{width:6px;height:6px;background:#22d3ee;border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.4rem,5.5vw,4.8rem);line-height:1.08;letter-spacing:-2px;max-width:780px;}
+.hero h1 span{background:linear-gradient(135deg,#22d3ee,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero p{color:#64748b;font-size:1.05rem;max-width:520px;margin:20px auto 36px;line-height:1.7;}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.stats-row{display:flex;justify-content:center;margin-top:56px;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;max-width:680px;width:100%;}
+.stat{flex:1;padding:22px 16px;border-right:1px solid rgba(255,255,255,0.07);text-align:center;background:rgba(255,255,255,0.02);}
+.stat:last-child{border-right:none;}
+.stat-n{font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;color:#22d3ee;letter-spacing:-1px;}
+.stat-l{font-size:0.7rem;color:#64748b;margin-top:4px;}
+
+.section{padding:80px 48px;max-width:1100px;margin:0 auto;}
+.sec-tag{font-family:'DM Mono',monospace;font-size:0.68rem;color:#22d3ee;letter-spacing:0.12em;margin-bottom:12px;}
+.sec-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.7rem,3vw,2.5rem);letter-spacing:-1px;}
+.sec-sub{color:#64748b;margin-top:12px;max-width:500px;font-size:0.95rem;line-height:1.7;}
+
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:48px;}
+.step{background:#111827;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:24px 18px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.25);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.85rem;color:#22d3ee;margin-bottom:14px;}
+.step h4{font-weight:600;font-size:0.9rem;margin-bottom:7px;}
+.step p{font-size:0.78rem;color:#64748b;line-height:1.6;}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px;}
+.card{background:#111827;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:26px;transition:all 0.25s;}
+.card:hover{border-color:rgba(34,211,238,0.25);transform:translateY(-3px);}
+.card-icon{font-size:22px;margin-bottom:14px;}
+.card h4{font-weight:600;font-size:0.95rem;margin-bottom:8px;}
+.card p{font-size:0.82rem;color:#64748b;line-height:1.6;}
+
+.cta-strip{background:#111827;border-top:1px solid rgba(255,255,255,0.07);border-bottom:1px solid rgba(255,255,255,0.07);padding:64px 48px;text-align:center;}
+.cta-strip h2{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);letter-spacing:-1px;margin-bottom:12px;}
+.cta-strip p{color:#64748b;margin-bottom:28px;font-size:0.95rem;}
+footer{background:#0b0f1a;border-top:1px solid rgba(255,255,255,0.07);padding:32px 48px;display:flex;align-items:center;justify-content:space-between;}
+.footer-logo{font-family:'Syne',sans-serif;font-weight:800;color:#22d3ee;font-size:1.1rem;}
+.footer-links{display:flex;gap:24px;list-style:none;}
+.footer-links li{color:#64748b;font-size:0.82rem;cursor:pointer;transition:color 0.2s;}
+.footer-links li:hover{color:#e2e8f0;}
+.footer-copy{font-size:0.7rem;color:#334155;font-family:'DM Mono',monospace;}
+
+/* ===== LOGIN ===== */
+#login{display:none;align-items:center;justify-content:center;background:#0b0f1a;}
+#login.active{display:flex;}
+.auth-wrap{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:40px 24px;width:100%;}
+.auth-box{background:#111827;border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:40px;width:100%;max-width:420px;}
+.auth-box h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;margin-bottom:6px;}
+.auth-sub{color:#64748b;font-size:0.875rem;margin-bottom:28px;}
+.tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:10px;padding:4px;margin-bottom:28px;}
+.tab{flex:1;padding:8px;text-align:center;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;color:#64748b;transition:all 0.2s;border:none;background:transparent;}
+.tab.active{background:#1e293b;color:#e2e8f0;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:0.78rem;font-weight:500;color:#94a3b8;margin-bottom:6px;}
+.field input,.field select{width:100%;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:9px;color:#e2e8f0;font-size:0.875rem;font-family:'Inter',sans-serif;outline:none;transition:border 0.2s;}
+.field input:focus,.field select:focus{border-color:#22d3ee;}
+.field select option{background:#1e293b;}
+.auth-divider{text-align:center;color:#334155;font-size:0.8rem;margin:16px 0;}
+.social-btn{width:100%;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:9px;color:#94a3b8;font-size:0.875rem;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:10px;transition:all 0.2s;}
+.social-btn:hover{border-color:#22d3ee;color:#22d3ee;}
+.auth-footer{text-align:center;margin-top:20px;font-size:0.8rem;color:#64748b;}
+.auth-footer span{color:#22d3ee;cursor:pointer;}
+
+/* ===== DASHBOARD ===== */
+.dash-layout{display:flex;min-height:calc(100vh - 64px);}
+.sidebar{width:230px;min-height:calc(100vh - 64px);background:#0f1623;border-right:1px solid rgba(255,255,255,0.07);padding:20px 12px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;}
+.sb-profile{display:flex;align-items:center;gap:10px;padding:12px;margin-bottom:16px;background:rgba(255,255,255,0.03);border-radius:10px;}
+.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#14b8a6);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:#000;flex-shrink:0;}
+.sb-name{font-weight:600;font-size:0.83rem;}
+.sb-role{font-size:0.68rem;color:#64748b;}
+.sb-section{font-size:0.62rem;color:#334155;letter-spacing:0.1em;text-transform:uppercase;padding:12px 10px 5px;font-family:'DM Mono',monospace;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:0.83rem;color:#64748b;cursor:pointer;margin-bottom:2px;transition:all 0.15s;border:none;background:transparent;width:100%;text-align:left;}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:#e2e8f0;}
+.nav-item.active{background:rgba(34,211,238,0.1);color:#22d3ee;font-weight:600;}
+.nav-icon{width:18px;text-align:center;font-size:14px;flex-shrink:0;}
+
+.dash-main{flex:1;padding:28px;overflow:auto;}
+.dash-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;}
+.dash-header h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;}
+.dash-header p{color:#64748b;font-size:0.8rem;margin-top:4px;}
+
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:100px;padding:4px 11px;font-size:0.7rem;font-family:'DM Mono',monospace;}
+.pill-green{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#10b981;}
+.pill-amber{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);color:#f59e0b;}
+.pill-rose{background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.25);color:#f43f5e;}
+.pill-cyan{background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.25);color:#22d3ee;}
+.pdot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:blink 2s infinite;flex-shrink:0;}
+
+.alert-bar{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:20px;font-size:0.83rem;}
+.alert-bar strong{color:#f59e0b;}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+.kpi{background:#111827;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:18px;}
+.kpi-l{font-size:0.67rem;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;}
+.kpi-v{font-family:'Syne',sans-serif;font-weight:800;font-size:1.55rem;}
+.kpi-c{font-size:0.7rem;margin-top:5px;}
+.green{color:#10b981;} .amber{color:#f59e0b;} .rose{color:#f43f5e;} .cyan{color:#22d3ee;}
+
+.grid2{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:18px;}
+.widget{background:#111827;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px;}
+.widget-title{font-size:0.72rem;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px;font-weight:600;}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:100px;}
+.bar-g{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;}
+.bar-r{width:100%;border-radius:3px 3px 0 0;}
+.bar-lbl{font-size:0.58rem;color:#475569;font-family:'DM Mono',monospace;}
+.ring-wrap{display:flex;align-items:center;justify-content:center;flex-direction:column;height:100px;}
+.ring{width:80px;height:80px;border-radius:50%;background:conic-gradient(#f59e0b 0% 62%,#1e293b 62% 100%);display:flex;align-items:center;justify-content:center;}
+.ring-in{width:56px;height:56px;border-radius:50%;background:#111827;display:flex;align-items:center;justify-content:center;flex-direction:column;}
+.ring-v{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:#f59e0b;}
+.ring-l{font-size:0.52rem;color:#64748b;}
+
+table{width:100%;border-collapse:collapse;}
+th{font-size:0.68rem;color:#64748b;text-align:left;padding:8px 12px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid rgba(255,255,255,0.06);}
+td{font-size:0.82rem;padding:11px 12px;border-bottom:1px solid rgba(255,255,255,0.04);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+
+/* ===== CLAIMS PAGE ===== */
+.claim-card{background:#111827;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.claim-card:hover{border-color:rgba(34,211,238,0.2);}
+.claim-id{font-family:'DM Mono',monospace;font-size:0.78rem;color:#64748b;}
+.claim-event{font-weight:600;font-size:0.88rem;margin:4px 0;}
+.claim-date{font-size:0.75rem;color:#64748b;}
+.claim-amt{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;}
+.claim-actions{display:flex;gap:8px;align-items:center;}
+
+/* ===== PROFILE ===== */
+.profile-hero{background:#111827;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:28px;display:flex;align-items:center;gap:20px;margin-bottom:20px;}
+.avatar-lg{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#14b8a6);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.4rem;color:#000;flex-shrink:0;}
+.profile-info h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;}
+.profile-info p{color:#64748b;font-size:0.83rem;margin-top:4px;}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.profile-card{background:#111827;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px;}
+.profile-card h4{font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;font-weight:600;}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.83rem;}
+.info-row:last-child{border-bottom:none;}
+.info-label{color:#64748b;}
+
+/* ===== ADMIN ===== */
+.admin-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.top-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px;}
+.fraud-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.82rem;}
+.fraud-item:last-child{border-bottom:none;}
+
+/* ===== WEATHER ===== */
+.weather-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+.weather-card{background:#111827;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px;text-align:center;}
+.weather-icon{font-size:36px;margin-bottom:10px;}
+.weather-city{font-weight:600;font-size:0.9rem;margin-bottom:4px;}
+.weather-val{font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;}
+.weather-sub{font-size:0.72rem;color:#64748b;margin-top:4px;}
+.trigger-alert{background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.25);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:0.83rem;}
+.trigger-alert strong{color:#f43f5e;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:#10b981;color:#fff;padding:12px 20px;border-radius:10px;font-size:0.85rem;font-weight:600;z-index:9999;display:none;box-shadow:0 8px 24px rgba(0,0,0,0.4);animation:slideUp 0.3s ease;}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;display:none;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:#111827;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:32px;max-width:420px;width:90%;}
+.modal h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:8px;}
+.modal p{color:#64748b;font-size:0.85rem;margin-bottom:24px;line-height:1.6;}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;}
+
+@media(max-width:768px){
+  nav{padding:14px 20px;}
+  .nav-links{display:none;}
+  .steps{grid-template-columns:1fr 1fr;}
+  .cards{grid-template-columns:1fr 1fr;}
+  .kpi-grid,.admin-kpi{grid-template-columns:1fr 1fr;}
+  .grid2{grid-template-columns:1fr;}
+  .top-row{grid-template-columns:1fr;}
+  .profile-grid{grid-template-columns:1fr;}
+  .sidebar{width:56px;}
+  .sb-name,.sb-role,.sb-section,.nav-item span:not(.nav-icon){display:none;}
+  .weather-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showPage('landing')">
+    <div class="logo-box">🛡</div>GigShield
+  </div>
+  <ul class="nav-links">
+    <li id="nl-landing" class="active" onclick="showPage('landing')">Home</li>
+    <li id="nl-dashboard" onclick="showPage('dashboard')">Dashboard</li>
+    <li id="nl-claims" onclick="showPage('claims')">Claims</li>
+    <li id="nl-weather" onclick="showPage('weather')">Weather</li>
+    <li id="nl-admin" onclick="showPage('admin')">Admin</li>
+  </ul>
+  <div class="nav-btns">
+    <button class="btn btn-ghost" id="nav-signin-btn" onclick="showPage('login')">Sign In</button>
+    <button class="btn btn-cyan" id="nav-main-btn" onclick="showPage('login')">Get Started</button>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">Confirm Action</h3>
+    <p id="modal-body">Are you sure?</p>
+    <div class="modal-btns">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-cyan btn-sm" id="modal-confirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ LANDING ══════════ -->
+<div id="landing" class="page active">
+  <div class="hero">
+    <div class="badge"><span class="bdot"></span> AI-POWERED PARAMETRIC INSURANCE · LIVE</div>
+    <h1>Instant Protection for<br><span>Every Gig Worker</span></h1>
+    <p>Parametric triggers pay out claims in seconds when weather or AQI thresholds are crossed — no paperwork, no delays.</p>
+    <div class="hero-btns">
+      <button class="btn btn-cyan btn-lg" onclick="showPage('login')">Start Free Trial</button>
+      <button class="btn btn-outline" onclick="showPage('dashboard')">View Dashboard →</button>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-n">2.4s</div><div class="stat-l">Avg. Payout Time</div></div>
+      <div class="stat"><div class="stat-n">98.7%</div><div class="stat-l">Fraud Detection</div></div>
+      <div class="stat"><div class="stat-n">120K+</div><div class="stat-l">Workers Protected</div></div>
+      <div class="stat"><div class="stat-n">₹0</div><div class="stat-l">Manual Processing</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-tag">HOW IT WORKS</div>
+    <h2 class="sec-title">From Trigger to Payout in Seconds</h2>
+    <p class="sec-sub">Five steps — fully automated, AI-verified, fraud-proof.</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">01</div><h4>Register & Pay Weekly</h4><p>Sign up in 3 min, choose your work zone, pay micro-premiums weekly.</p></div>
+      <div class="step"><div class="step-num">02</div><h4>AI Monitors Risk</h4><p>Live weather, AQI and GPS data feed into risk models around the clock.</p></div>
+      <div class="step"><div class="step-num">03</div><h4>Parametric Trigger</h4><p>Rainfall, AQI or heat crosses threshold — engine fires automatically.</p></div>
+      <div class="step"><div class="step-num">04</div><h4>Fraud Check</h4><p>Anti-spoofing, anomaly detection and duplicate prevention run in parallel.</p></div>
+      <div class="step"><div class="step-num">05</div><h4>Instant Payout</h4><p>Verified claim credited to wallet — average 2.4 seconds end-to-end.</p></div>
+    </div>
+  </div>
+
+  <div style="background:#0f1623;padding:80px 0;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);">
+    <div class="section" style="padding-top:0;padding-bottom:0;">
+      <div class="sec-tag">FEATURES</div>
+      <h2 class="sec-title">Built for Gig Workers</h2>
+      <div class="cards">
+        <div class="card"><div class="card-icon">⚡</div><h4>Parametric Trigger Engine</h4><p>Auto-payouts fire the instant weather or AQI thresholds are crossed. Zero manual claims needed.</p></div>
+        <div class="card"><div class="card-icon">🧠</div><h4>AI Risk Assessment</h4><p>ML models evaluate location, weather patterns, and behavior to compute live risk scores.</p></div>
+        <div class="card"><div class="card-icon">📉</div><h4>Dynamic Premiums</h4><p>Weekly premiums auto-adjust based on risk score, AQI, and weather forecasts every week.</p></div>
+        <div class="card"><div class="card-icon">📍</div><h4>GPS Spoofing Detection</h4><p>Validates GPS against cell tower triangulation. Impossible patterns are quarantined instantly.</p></div>
+        <div class="card"><div class="card-icon">🛡</div><h4>Fraud Detection</h4><p>Anomaly detection, duplicate prevention, and adversarial defense run before any payout.</p></div>
+        <div class="card"><div class="card-icon">🌧</div><h4>Weather & AQI APIs</h4><p>Real-time data from OpenWeatherMap and AQI feeds drive all trigger decisions automatically.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-strip">
+    <h2>Ready to Protect Every Delivery?</h2>
+    <p>Deploy GigShield in under a day. Full API access and sandbox included.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-cyan btn-lg" onclick="showPage('login')">Create Free Account</button>
+      <button class="btn btn-outline" onclick="showModal('Schedule Demo','Our team will reach out within 24 hours to set up your personalised demo.',function(){toast('Demo request sent! We will contact you soon.')})">Schedule Demo</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">⚡ GigShield</div>
+    <ul class="footer-links">
+      <li onclick="showPage('dashboard')">Platform</li>
+      <li onclick="toast('API docs coming soon!')">API Docs</li>
+      <li onclick="showPage('admin')">Admin</li>
+      <li onclick="showPage('claims')">Claims</li>
+      <li onclick="showPage('weather')">Weather</li>
+    </ul>
+    <div class="footer-copy">© 2025 GigShield · v2.4.1</div>
+  </footer>
+</div>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="login" class="page">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <h2>Welcome to GigShield</h2>
+      <p class="auth-sub">AI-powered insurance for gig workers</p>
+      <div class="tabs">
+        <button class="tab active" id="tab-in" onclick="switchTab('in')">Sign In</button>
+        <button class="tab" id="tab-up" onclick="switchTab('up')">Register</button>
+      </div>
+
+      <!-- SIGN IN -->
+      <div id="form-in">
+        <div class="field"><label>Phone / Email</label><input type="text" id="login-email" placeholder="Enter phone or email"></div>
+        <div class="field"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••"></div>
+        <button class="btn btn-cyan btn-full" onclick="doLogin()">Sign In →</button>
+        <div class="auth-divider">— or —</div>
+        <button class="social-btn" onclick="doLogin()">🌐 Continue with Google</button>
+        <div class="auth-footer">No account? <span onclick="switchTab('up')">Register free</span></div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="form-up" style="display:none;">
+        <div class="field"><label>Full Name</label><input type="text" id="reg-name" placeholder="Arjun Kumar"></div>
+        <div class="field"><label>Phone Number</label><input type="tel" id="reg-phone" placeholder="+91 98765 43210"></div>
+        <div class="field"><label>Gig Category</label>
+          <select id="reg-cat">
+            <option value="">Select gig type...</option>
+            <option>Food Delivery</option>
+            <option>Cab / Auto Driver</option>
+            <option>Package Delivery</option>
+            <option>Freelance Services</option>
+          </select>
+        </div>
+        <div class="field"><label>Work City</label>
+          <select id="reg-city">
+            <option value="">Select city...</option>
+            <option>Hyderabad</option>
+            <option>Bengaluru</option>
+            <option>Chennai</option>
+            <option>Mumbai</option>
+            <option>Delhi NCR</option>
+          </select>
+        </div>
+        <div class="field"><label>Password</label><input type="password" id="reg-pass" placeholder="Create a strong password"></div>
+        <button class="btn btn-cyan btn-full" onclick="doRegister()">Create Account →</button>
+        <div class="auth-footer">Already registered? <span onclick="switchTab('in')">Sign in</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ WORKER DASHBOARD ══════════ -->
+<div id="dashboard" class="page">
+  <div class="dash-layout">
+    <div class="sidebar">
+      <div class="sb-profile">
+        <div class="avatar">AK</div>
+        <div><div class="sb-name">Arjun Kumar</div><div class="sb-role">Food Delivery · HYD</div></div>
+      </div>
+      <div class="sb-section">Main</div>
+      <button class="nav-item active" id="sb-dashboard" onclick="switchDash('main')"><span class="nav-icon">📊</span><span>Dashboard</span></button>
+      <button class="nav-item" id="sb-claims" onclick="showPage('claims')"><span class="nav-icon">📋</span><span>My Claims</span></button>
+      <button class="nav-item" id="sb-profile" onclick="showPage('profile')"><span class="nav-icon">👤</span><span>Profile</span></button>
+      <button class="nav-item" onclick="showPage('weather')"><span class="nav-icon">🌧</span><span>Weather Alerts</span></button>
+      <div class="sb-section">Admin</div>
+      <button class="nav-item" onclick="showPage('admin')"><span class="nav-icon">🖥</span><span>Admin Panel</span></button>
+      <div class="sb-section">Account</div>
+      <button class="nav-item" onclick="doLogout()"><span class="nav-icon">🚪</span><span>Sign Out</span></button>
+    </div>
+
+    <div class="dash-main">
+      <div class="dash-header">
+        <div><h2>Good morning, Arjun 👋</h2><p>Hyderabad Zone · Coverage active · Last updated 2 min ago</p></div>
+        <div class="pill pill-green"><span class="pdot"></span> COVERAGE ACTIVE</div>
+      </div>
+
+      <div class="alert-bar">
+        🌧 <div><strong>Parametric Alert:</strong> Rainfall 87mm detected in Zone 4 — automatic claim triggered and under fraud review. <span style="color:#22d3ee;cursor:pointer;" onclick="showPage('claims')">View claim →</span></div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-l">This Week's Premium</div><div class="kpi-v cyan">₹148</div><div class="kpi-c amber">▲ Risk-adjusted (AQI 178)</div></div>
+        <div class="kpi"><div class="kpi-l">Total Paid Out</div><div class="kpi-v green">₹3,200</div><div class="kpi-c green">↑ 2 payouts this month</div></div>
+        <div class="kpi"><div class="kpi-l">AI Risk Score</div><div class="kpi-v amber">62 / 100</div><div class="kpi-c amber">● Medium — AQI spike</div></div>
+        <div class="kpi"><div class="kpi-l">Open Claims</div><div class="kpi-v rose">1</div><div class="kpi-c amber">⏳ Auto-processing…</div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="widget">
+          <div class="widget-title">Weekly Payouts (₹)</div>
+          <div class="bar-chart">
+            <div class="bar-g"><div class="bar-r" style="height:40px;background:rgba(34,211,238,0.4)"></div><span class="bar-lbl">MON</span></div>
+            <div class="bar-g"><div class="bar-r" style="height:68px;background:rgba(34,211,238,0.5)"></div><span class="bar-lbl">TUE</span></div>
+            <div class="bar-g"><div class="bar-r" style="height:50px;background:rgba(34,211,238,0.4)"></div><span class="bar-lbl">WED</span></div>
+            <div class="bar-g"><div class="bar-r" style="height:88px;background:rgba(34,211,238,0.7)"></div><span class="bar-lbl">THU</span></div>
+            <div class="bar-g"><div class="bar-r" style="height:30px;background:rgba(34,211,238,0.3)"></div><span class="bar-lbl">FRI</span></div>
+            <div class="bar-g"><div class="bar-r" style="height:100px;background:linear-gradient(to top,rgba(244,63,94,0.5),rgba(245,158,11,0.5))"></div><span class="bar-lbl">SAT</span></div>
+            <div class="bar-g"><div class="bar-r" style="height:48px;background:rgba(34,211,238,0.35)"></div><span class="bar-lbl">SUN</span></div>
+          </div>
+        </div>
+        <div class="widget">
+          <div class="widget-title">AI Risk Gauge</div>
+          <div class="ring-wrap">
+            <div class="ring"><div class="ring-in"><div class="ring-v">62</div><div class="ring-l">MEDIUM</div></div></div>
+            <p style="font-size:0.65rem;color:#475569;margin-top:10px;text-align:center;">Updated 2 min ago · AQI 178 HYD</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="widget">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div class="widget-title" style="margin:0">Recent Claims</div>
+          <button class="btn btn-cyan btn-sm" onclick="showPage('claims')">View All →</button>
+        </div>
+        <table>
+          <thead><tr><th>Claim ID</th><th>Trigger Event</th><th>Date</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="font-family:'DM Mono',monospace;font-size:0.75rem;">CLM-20482</td>
+              <td>Rainfall &gt; 80mm · Zone 4</td><td>Mar 19, 2025</td>
+              <td class="green">₹320</td>
+              <td><span class="pill pill-amber">⏳ Processing</span></td>
+              <td><button class="btn btn-ghost btn-sm" onclick="toast('Claim CLM-20482 details loaded')">Details</button></td>
+            </tr>
+            <tr>
+              <td style="font-family:'DM Mono',monospace;font-size:0.75rem;">CLM-20341</td>
+              <td>AQI &gt; 150 · Hyderabad</td><td>Mar 14, 2025</td>
+              <td class="green">₹200</td>
+              <td><span class="pill pill-green">✓ Paid</span></td>
+              <td><button class="btn btn-ghost btn-sm" onclick="toast('₹200 paid on Mar 14 — UPI credited')">Details</button></td>
+            </tr>
+            <tr>
+              <td style="font-family:'DM Mono',monospace;font-size:0.75rem;">CLM-19987</td>
+              <td>Heat Index &gt; 42°C</td><td>Mar 8, 2025</td>
+              <td class="green">₹250</td>
+              <td><span class="pill pill-green">✓ Paid</span></td>
+              <td><button class="btn btn-ghost btn-sm" onclick="toast('₹250 paid on Mar 8 — UPI credited')">Details</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CLAIMS PAGE ══════════ -->
+<div id="claims" class="page">
+  <div class="dash-layout">
+    <div class="sidebar">
+      <div class="sb-profile"><div class="avatar">AK</div><div><div class="sb-name">Arjun Kumar</div><div class="sb-role">Food Delivery · HYD</div></div></div>
+      <div class="sb-section">Main</div>
+      <button class="nav-item" onclick="showPage('dashboard')"><span class="nav-icon">📊</span><span>Dashboard</span></button>
+      <button class="nav-item active"><span class="nav-icon">📋</span><span>My Claims</span></button>
+      <button class="nav-item" onclick="showPage('profile')"><span class="nav-icon">👤</span><span>Profile</span></button>
+      <button class="nav-item" onclick="showPage('weather')"><span class="nav-icon">🌧</span><span>Weather Alerts</span></button>
+      <div class="sb-section">Admin</div>
+      <button class="nav-item" onclick="showPage('admin')"><span class="nav-icon">🖥</span><span>Admin Panel</span></button>
+      <div class="sb-section">Account</div>
+      <button class="nav-item" onclick="doLogout()"><span class="nav-icon">🚪</span><span>Sign Out</span></button>
+    </div>
+    <div class="dash-main">
+      <div class="dash-header">
+        <div><h2>My Claims 📋</h2><p>All parametric claims — auto-triggered and verified by AI</p></div>
+        <button class="btn btn-cyan" onclick="showModal('File Manual Claim','Parametric claims are auto-triggered by weather events. Manual claims require zone verification and take 24-48 hours.',function(){toast('Manual claim submitted — tracking ID: CLM-20499')})">+ File Manual Claim</button>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-l">Total Claims</div><div class="kpi-v cyan">4</div><div class="kpi-c green">All time</div></div>
+        <div class="kpi"><div class="kpi-l">Total Paid</div><div class="kpi-v green">₹770</div><div class="kpi-c green">3 successful payouts</div></div>
+        <div class="kpi"><div class="kpi-l">Processing</div><div class="kpi-v amber">1</div><div class="kpi-c amber">Avg. 2.4s payout</div></div>
+        <div class="kpi"><div class="kpi-l">Rejected</div><div class="kpi-v rose">1</div><div class="kpi-c rose">GPS mismatch</div></div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-title">All Claims</div>
+        <div class="claim-card">
+          <div>
+            <div class="claim-id">CLM-20482 · Mar 19, 2025</div>
+            <div class="claim-event">🌧 Rainfall &gt; 80mm — Hyderabad Zone 4</div>
+            <div class="claim-date">Parametric trigger · Auto-filed · GPS verified</div>
+          </div>
+          <div class="claim-actions">
+            <div class="claim-amt green">₹320</div>
+            <span class="pill pill-amber">⏳ Processing</span>
+            <button class="btn btn-ghost btn-sm" onclick="toast('Claim CLM-20482 — Fraud check 87% complete. ETA: 45 seconds.')">Track</button>
+          </div>
+        </div>
+        <div class="claim-card">
+          <div>
+            <div class="claim-id">CLM-20341 · Mar 14, 2025</div>
+            <div class="claim-event">💨 AQI &gt; 150 — Hyderabad City Zone</div>
+            <div class="claim-date">Parametric trigger · Auto-filed · Paid via UPI</div>
+          </div>
+          <div class="claim-actions">
+            <div class="claim-amt green">₹200</div>
+            <span class="pill pill-green">✓ Paid</span>
+            <button class="btn btn-ghost btn-sm" onclick="toast('₹200 credited to UPI: arjun@ybl on Mar 14, 2025')">Receipt</button>
+          </div>
+        </div>
+        <div class="claim-card">
+          <div>
+            <div class="claim-id">CLM-19987 · Mar 8, 2025</div>
+            <div class="claim-event">🌡 Heat Index &gt; 42°C — Hyderabad Zone 2</div>
+            <div class="claim-date">Parametric trigger · Auto-filed · Paid via UPI</div>
+          </div>
+          <div class="claim-actions">
+            <div class="claim-amt green">₹250</div>
+            <span class="pill pill-green">✓ Paid</span>
+            <button class="btn btn-ghost btn-sm" onclick="toast('₹250 credited to UPI: arjun@ybl on Mar 8, 2025')">Receipt</button>
+          </div>
+        </div>
+        <div class="claim-card">
+          <div>
+            <div class="claim-id">CLM-19503 · Feb 28, 2025</div>
+            <div class="claim-event">🌧 Rainfall &gt; 80mm — Hyderabad Zone 2</div>
+            <div class="claim-date">Rejected · GPS location mismatch detected</div>
+          </div>
+          <div class="claim-actions">
+            <div class="claim-amt rose">₹320</div>
+            <span class="pill pill-rose">✗ Rejected</span>
+            <button class="btn btn-ghost btn-sm" onclick="showModal('Claim Rejected — CLM-19503','GPS coordinates did not match your registered work zone at the time of the rainfall event. Anti-spoofing module flagged the location as invalid.',null)">Why?</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PROFILE PAGE ══════════ -->
+<div id="profile" class="page">
+  <div class="dash-layout">
+    <div class="sidebar">
+      <div class="sb-profile"><div class="avatar">AK</div><div><div class="sb-name">Arjun Kumar</div><div class="sb-role">Food Delivery · HYD</div></div></div>
+      <div class="sb-section">Main</div>
+      <button class="nav-item" onclick="showPage('dashboard')"><span class="nav-icon">📊</span><span>Dashboard</span></button>
+      <button class="nav-item" onclick="showPage('claims')"><span class="nav-icon">📋</span><span>My Claims</span></button>
+      <button class="nav-item active"><span class="nav-icon">👤</span><span>Profile</span></button>
+      <button class="nav-item" onclick="showPage('weather')"><span class="nav-icon">🌧</span><span>Weather Alerts</span></button>
+      <div class="sb-section">Admin</div>
+      <button class="nav-item" onclick="showPage('admin')"><span class="nav-icon">🖥</span><span>Admin Panel</span></button>
+      <div class="sb-section">Account</div>
+      <button class="nav-item" onclick="doLogout()"><span class="nav-icon">🚪</span><span>Sign Out</span></button>
+    </div>
+    <div class="dash-main">
+      <div class="dash-header">
+        <div><h2>My Profile 👤</h2><p>Personal details, policy and payment info</p></div>
+        <button class="btn btn-cyan" onclick="toast('Profile saved successfully!')">Save Changes</button>
+      </div>
+
+      <div class="profile-hero">
+        <div class="avatar-lg">AK</div>
+        <div class="profile-info">
+          <h3>Arjun Kumar</h3>
+          <p>Food Delivery · Hyderabad Zone 4 · Member since Jan 2025</p>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <span class="pill pill-green"><span class="pdot"></span> Coverage Active</span>
+            <span class="pill pill-cyan">Risk Score: 62</span>
+          </div>
+        </div>
+        <button class="btn btn-ghost" style="margin-left:auto;" onclick="toast('Profile photo upload coming soon!')">Change Photo</button>
+      </div>
+
+      <div class="profile-grid">
+        <div class="profile-card">
+          <h4>Personal Info</h4>
+          <div class="info-row"><span class="info-label">Full Name</span><span>Arjun Kumar</span></div>
+          <div class="info-row"><span class="info-label">Phone</span><span>+91 98765 43210</span></div>
+          <div class="info-row"><span class="info-label">Email</span><span>arjun@gmail.com</span></div>
+          <div class="info-row"><span class="info-label">City</span><span>Hyderabad</span></div>
+          <div class="info-row"><span class="info-label">Gig Type</span><span>Food Delivery</span></div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:14px;width:100%;" onclick="toast('Edit mode enabled — update your details')">Edit Details</button>
+        </div>
+        <div class="profile-card">
+          <h4>Policy Details</h4>
+          <div class="info-row"><span class="info-label">Policy ID</span><span style="font-family:'DM Mono',monospace;font-size:0.78rem;">POL-HYD-29481</span></div>
+          <div class="info-row"><span class="info-label">Work Zone</span><span>Hyderabad Zone 4</span></div>
+          <div class="info-row"><span class="info-label">Weekly Premium</span><span class="cyan">₹148</span></div>
+          <div class="info-row"><span class="info-label">Coverage</span><span>Rainfall, AQI, Heat</span></div>
+          <div class="info-row"><span class="info-label">Status</span><span class="green">Active</span></div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:14px;width:100%;" onclick="showModal('Upgrade Policy','Upgrade to Premium coverage and get payouts for cyclone, flood, and road accident events too.',function(){toast('Policy upgraded to Premium!')})">Upgrade Policy</button>
+        </div>
+        <div class="profile-card">
+          <h4>Payment Info</h4>
+          <div class="info-row"><span class="info-label">UPI ID</span><span>arjun@ybl</span></div>
+          <div class="info-row"><span class="info-label">Auto-deduct</span><span class="green">Enabled</span></div>
+          <div class="info-row"><span class="info-label">Next Premium</span><span>Mar 25, 2025</span></div>
+          <div class="info-row"><span class="info-label">Last Payment</span><span>Mar 18, 2025</span></div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:14px;width:100%;" onclick="toast('Payment method updated!')">Update UPI</button>
+        </div>
+        <div class="profile-card">
+          <h4>Security</h4>
+          <div class="info-row"><span class="info-label">Password</span><span>••••••••</span></div>
+          <div class="info-row"><span class="info-label">2FA</span><span class="green">Enabled</span></div>
+          <div class="info-row"><span class="info-label">Login Alerts</span><span class="green">On</span></div>
+          <div class="info-row"><span class="info-label">Devices</span><span>2 active</span></div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:14px;width:100%;" onclick="toast('Password reset link sent to your phone!')">Change Password</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ WEATHER PAGE ══════════ -->
+<div id="weather" class="page">
+  <div class="dash-layout">
+    <div class="sidebar">
+      <div class="sb-profile"><div class="avatar">AK</div><div><div class="sb-name">Arjun Kumar</div><div class="sb-role">Food Delivery · HYD</div></div></div>
+      <div class="sb-section">Main</div>
+      <button class="nav-item" onclick="showPage('dashboard')"><span class="nav-icon">📊</span><span>Dashboard</span></button>
+      <button class="nav-item" onclick="showPage('claims')"><span class="nav-icon">📋</span><span>My Claims</span></button>
+      <button class="nav-item" onclick="showPage('profile')"><span class="nav-icon">👤</span><span>Profile</span></button>
+      <button class="nav-item active"><span class="nav-icon">🌧</span><span>Weather Alerts</span></button>
+      <div class="sb-section">Admin</div>
+      <button class="nav-item" onclick="showPage('admin')"><span class="nav-icon">🖥</span><span>Admin Panel</span></button>
+      <div class="sb-section">Account</div>
+      <button class="nav-item" onclick="doLogout()"><span class="nav-icon">🚪</span><span>Sign Out</span></button>
+    </div>
+    <div class="dash-main">
+      <div class="dash-header">
+        <div><h2>Weather & AQI Monitor 🌧</h2><p>Live data driving your parametric triggers</p></div>
+        <button class="btn btn-cyan" onclick="toast('Weather data refreshed — last update: just now')">↻ Refresh</button>
+      </div>
+
+      <div class="trigger-alert">🔴 <div><strong>ACTIVE TRIGGER:</strong> Hyderabad Zone 4 — Rainfall 87mm exceeds 80mm threshold. Auto-claim CLM-20482 filed. <span style="color:#22d3ee;cursor:pointer;" onclick="showPage('claims')">View claim →</span></div></div>
+
+      <div class="weather-grid">
+        <div class="weather-card">
+          <div class="weather-icon">🌧</div>
+          <div class="weather-city">Hyderabad Zone 4</div>
+          <div class="weather-val rose">87mm</div>
+          <div class="weather-sub">Rainfall today · Trigger: &gt;80mm</div>
+          <span class="pill pill-rose" style="margin-top:12px;">⚡ TRIGGERED</span>
+        </div>
+        <div class="weather-card">
+          <div class="weather-icon">💨</div>
+          <div class="weather-city">Hyderabad City</div>
+          <div class="weather-val amber">178 AQI</div>
+          <div class="weather-sub">Air Quality · Trigger: &gt;150</div>
+          <span class="pill pill-amber" style="margin-top:12px;">⚠ WARNING</span>
+        </div>
+        <div class="weather-card">
+          <div class="weather-icon">🌡</div>
+          <div class="weather-city">Hyderabad Zone 2</div>
+          <div class="weather-val green">38°C</div>
+          <div class="weather-sub">Heat Index · Trigger: &gt;42°C</div>
+          <span class="pill pill-green" style="margin-top:12px;">✓ SAFE</span>
+        </div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-title">7-Day Forecast — Hyderabad</div>
+        <table>
+          <thead><tr><th>Day</th><th>Condition</th><th>Rainfall</th><th>AQI</th><th>Heat Index</th><th>Risk</th></tr></thead>
+          <tbody>
+            <tr><td>Today</td><td>🌧 Heavy Rain</td><td class="rose">87mm ⚡</td><td class="amber">178</td><td>36°C</td><td><span class="pill pill-rose">HIGH</span></td></tr>
+            <tr><td>Tomorrow</td><td>🌦 Light Rain</td><td>42mm</td><td class="amber">145</td><td>37°C</td><td><span class="pill pill-amber">MEDIUM</span></td></tr>
+            <tr><td>Wed</td><td>⛅ Cloudy</td><td>12mm</td><td>98</td><td>38°C</td><td><span class="pill pill-green">LOW</span></td></tr>
+            <tr><td>Thu</td><td>☀ Sunny</td><td>0mm</td><td>82</td><td class="amber">41°C</td><td><span class="pill pill-amber">MEDIUM</span></td></tr>
+            <tr><td>Fri</td><td>☀ Sunny</td><td>0mm</td><td>76</td><td class="rose">43°C ⚡</td><td><span class="pill pill-rose">HIGH</span></td></tr>
+            <tr><td>Sat</td><td>🌧 Rain</td><td>55mm</td><td>110</td><td>35°C</td><td><span class="pill pill-amber">MEDIUM</span></td></tr>
+            <tr><td>Sun</td><td>⛅ Partly Cloudy</td><td>8mm</td><td>88</td><td>37°C</td><td><span class="pill pill-green">LOW</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ADMIN DASHBOARD ══════════ -->
+<div id="admin" class="page">
+  <div class="dash-layout">
+    <div class="sidebar">
+      <div class="sb-profile"><div class="avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed);">AD</div><div><div class="sb-name">Admin Panel</div><div class="sb-role">GigShield Operations</div></div></div>
+      <div class="sb-section">Operations</div>
+      <button class="nav-item active"><span class="nav-icon">🖥</span><span>Overview</span></button>
+      <button class="nav-item" onclick="toast('Claims management loaded')"><span class="nav-icon">📋</span><span>All Claims</span></button>
+      <button class="nav-item" onclick="toast('Worker registry loaded — 120,388 workers')"><span class="nav-icon">👥</span><span>Workers</span></button>
+      <button class="nav-item" onclick="toast('Fraud queue: 34 items flagged for review')"><span class="nav-icon">🕵</span><span>Fraud Queue</span></button>
+      <div class="sb-section">Analytics</div>
+      <button class="nav-item" onclick="toast('Risk analytics loaded')"><span class="nav-icon">📈</span><span>Risk Insights</span></button>
+      <button class="nav-item" onclick="toast('Payout ledger loaded')"><span class="nav-icon">💰</span><span>Payouts</span></button>
+      <div class="sb-section">Account</div>
+      <button class="nav-item" onclick="showPage('landing')"><span class="nav-icon">🏠</span><span>Back to Site</span></button>
+    </div>
+    <div class="dash-main">
+      <div class="dash-header">
+        <div><h2>Admin Dashboard 🖥</h2><p>Platform operations · Real-time overview</p></div>
+        <div class="pill pill-green"><span class="pdot"></span> ALL SYSTEMS OPERATIONAL</div>
+      </div>
+
+      <div class="admin-kpi">
+        <div class="kpi"><div class="kpi-l">Active Workers</div><div class="kpi-v cyan">1,24,388</div><div class="kpi-c green">↑ 2.4% this week</div></div>
+        <div class="kpi"><div class="kpi-l">Claims Today</div><div class="kpi-v green">842</div><div class="kpi-c green">₹4,82,000 paid out</div></div>
+        <div class="kpi"><div class="kpi-l">Fraud Blocked</div><div class="kpi-v rose">34</div><div class="kpi-c rose">7 GPS spoofing</div></div>
+        <div class="kpi"><div class="kpi-l">Avg. Payout Time</div><div class="kpi-v amber">2.4s</div><div class="kpi-c green">↓ 0.3s from last week</div></div>
+      </div>
+
+      <div class="top-row">
+        <div class="widget">
+          <div class="widget-title">Payout Trend (₹ thousand)</div>
+          <div class="bar-chart" style="height:90px;">
+            <div class="bar-g"><div class="bar-r" style="height:50px;background:rgba(168,85,247,0.5)"></div><span class="bar-lbl">MON</span></div>
+            <div class="bar-g"><div class="bar-r" style="height:70px;background:rgba(168,85,247,0.5)"></div><span class="bar-lbl">TUE</span></div>
+            <div class="bar-g"><div class="bar-r" style="height:45px;background:rgba(168,85,247,0.4)"></div><span class="bar-lbl">WED</span></div>
+            <div class="bar-g"><div class="bar-r" style="height:85px;background:rgba(168,85,247,0.6)"></div><span class="bar-lbl">THU</span></div>
+            <div class="bar-g"><div class="bar-r" style="height:60px;background:rgba(168,85,247,0.5)"></div><span class="bar-lbl">FRI</span></div>
+            <div class="bar-g"><div class="bar-r" style="height:90px;background:rgba(168,85,247,0.7)"></div><span class="bar-lbl">SAT</span></div>
+            <div class="bar-g"><div class="bar-r" style="height:55px;background:rgba(168,85,247,0.45)"></div><span class="bar-lbl">SUN</span></div>
+          </div>
+        </div>
+        <div class="widget">
+          <div class="widget-title">Platform Health</div>
+          <div class="info-row"><span class="info-label" style="color:#64748b;">API Server</span><span class="green">● Online</span></div>
+          <div class="info-row"><span class="info-label" style="color:#64748b;">Database</span><span class="green">● Online</span></div>
+          <div class="info-row"><span class="info-label" style="color:#64748b;">Weather API</span><span class="green">● Online</span></div>
+          <div class="info-row"><span class="info-label" style="color:#64748b;">AI Models</span><span class="green">● Online</span></div>
+          <div class="info-row"><span class="info-label" style="color:#64748b;">Payment GW</span><span class="amber">● Degraded</span></div>
+        </div>
+        <div class="widget">
+          <div class="widget-title">Fraud Queue</div>
+          <div class="fraud-item"><span>GPS Spoofing · WRK-88291</span><button class="btn-danger btn-sm btn" onclick="toast('WRK-88291 quarantined and flagged for review')">Quarantine</button></div>
+          <div class="fraud-item"><span>Duplicate Claim · CLM-20491</span><button class="btn-danger btn-sm btn" onclick="toast('Duplicate claim CLM-20491 rejected')">Reject</button></div>
+          <div class="fraud-item"><span>Anomaly · WRK-77123</span><button class="btn-danger btn-sm btn" onclick="toast('WRK-77123 flagged for manual review')">Flag</button></div>
+          <div class="fraud-item"><span>Zone Mismatch · CLM-20488</span><button class="btn-danger btn-sm btn" onclick="toast('CLM-20488 rejected — zone mismatch confirmed')">Reject</button></div>
+        </div>
+      </div>
+
+      <div class="widget">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div class="widget-title" style="margin:0">Recent Claims — All Workers</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-ghost btn-sm" onclick="toast('Claims exported to CSV')">Export CSV</button>
+            <button class="btn btn-cyan btn-sm" onclick="toast('Claims report generated')">Generate Report</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>Claim ID</th><th>Worker</th><th>Event</th><th>Zone</th><th>Amount</th><th>Fraud Score</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td style="font-family:'DM Mono',monospace;font-size:0.73rem;">CLM-20482</td><td>Arjun Kumar</td><td>Rainfall 87mm</td><td>HYD-Z4</td><td class="green">₹320</td><td><span class="amber">24%</span></td><td><span class="pill pill-amber">Processing</span></td><td><button class="btn btn-cyan btn-sm" onclick="toast('CLM-20482 approved and payout queued')">Approve</button></td></tr>
+            <tr><td style="font-family:'DM Mono',monospace;font-size:0.73rem;">CLM-20491</td><td>Ravi Shankar</td><td>AQI 162</td><td>BLR-Z2</td><td class="green">₹200</td><td><span class="rose">91%</span></td><td><span class="pill pill-rose">Flagged</span></td><td><button class="btn-danger btn" onclick="toast('CLM-20491 rejected — high fraud score')">Reject</button></td></tr>
+            <tr><td style="font-family:'DM Mono',monospace;font-size:0.73rem;">CLM-20478</td><td>Priya Nair</td><td>Rainfall 94mm</td><td>CHN-Z1</td><td class="green">₹320</td><td><span class="green">8%</span></td><td><span class="pill pill-green">Paid</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('CLM-20478 receipt downloaded')">Receipt</button></td></tr>
+            <tr><td style="font-family:'DM Mono',monospace;font-size:0.73rem;">CLM-20471</td><td>Mohammed Ali</td><td>Heat 43°C</td><td>HYD-Z2</td><td class="green">₹250</td><td><span class="green">12%</span></td><td><span class="pill pill-green">Paid</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('CLM-20471 receipt downloaded')">Receipt</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var loggedIn = false;
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links li').forEach(l => l.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  var nl = document.getElementById('nl-' + id);
+  if (nl) nl.classList.add('active');
+  window.scrollTo(0, 0);
+
+  if (loggedIn) {
+    document.getElementById('nav-signin-btn').textContent = 'Profile';
+    document.getElementById('nav-signin-btn').onclick = function(){ showPage('profile'); };
+    document.getElementById('nav-main-btn').textContent = 'Sign Out';
+    document.getElementById('nav-main-btn').onclick = doLogout;
+  }
+}
+
+function switchTab(tab) {
+  document.getElementById('tab-in').classList.toggle('active', tab === 'in');
+  document.getElementById('tab-up').classList.toggle('active', tab === 'up');
+  document.getElementById('form-in').style.display = tab === 'in' ? 'block' : 'none';
+  document.getElementById('form-up').style.display = tab === 'up' ? 'block' : 'none';
+}
+
+function doLogin() {
+  var e = document.getElementById('login-email').value;
+  var p = document.getElementById('login-pass').value;
+  if (!e || !p) { toast('Please enter your email and password', 'error'); return; }
+  loggedIn = true;
+  toast('Welcome back, Arjun! Logging you in…');
+  setTimeout(function(){ showPage('dashboard'); }, 800);
+}
+
+function doRegister() {
+  var name = document.getElementById('reg-name').value;
+  var phone = document.getElementById('reg-phone').value;
+  var cat = document.getElementById('reg-cat').value;
+  var city = document.getElementById('reg-city').value;
+  var pass = document.getElementById('reg-pass').value;
+  if (!name || !phone || !cat || !city || !pass) { toast('Please fill all fields', 'error'); return; }
+  loggedIn = true;
+  toast('Account created! Welcome to GigShield, ' + name.split(' ')[0] + '!');
+  setTimeout(function(){ showPage('dashboard'); }, 900);
+}
+
+function doLogout() {
+  showModal('Sign Out', 'Are you sure you want to sign out of GigShield?', function() {
+    loggedIn = false;
+    document.getElementById('nav-signin-btn').textContent = 'Sign In';
+    document.getElementById('nav-signin-btn').onclick = function(){ showPage('login'); };
+    document.getElementById('nav-main-btn').textContent = 'Get Started';
+    document.getElementById('nav-main-btn').onclick = function(){ showPage('login'); };
+    toast('Signed out successfully');
+    showPage('landing');
+  });
+}
+
+function toast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = (type === 'error') ? '#f43f5e' : '#10b981';
+  t.style.display = 'block';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(function(){ t.style.display = 'none'; }, 3000);
+}
+
+function showModal(title, body, onConfirm) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').textContent = body;
+  var btn = document.getElementById('modal-confirm');
+  if (onConfirm) {
+    btn.style.display = 'inline-flex';
+    btn.onclick = function() { closeModal(); onConfirm(); };
+  } else {
+    btn.style.display = 'none';
+  }
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
